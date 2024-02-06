@@ -3,7 +3,247 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Weather App</title>
   </head>
-  <body></body>
+  <body>
+
+    <!-- header  -->
+    <header>
+
+      <!-- title & logo -->
+      <div class="title-div">
+        <img alt="sun and cloud logo" class="logo">
+        <h1>Weather App</h1>
+      </div>
+
+      <!-- search bar  -->
+      <div class="search-div">
+        <form>
+          <input type='search'
+                 id='loc-search'
+                 name='loc-search'
+                 placeholder='Search for location' 
+                 autocomplete="off" />
+
+          <button type="submit" class="search-btn">
+            <img alt="search icon" class="search-icon">
+          </button>
+        </form>
+      </div>
+
+      <!-- toggle switch -->
+      <div class="toggle-div">
+        <input type="checkbox"
+               name="unit-toggle"
+               id="unit-toggle">
+      </div>
+
+    </header>
+
+    <main>
+      <div class="main-card">
+        <div class="weather-heading">
+          <h1 class="location"></h1>
+          <h3 class="time"></h3>
+        </div>
+        <div class="current-weather card">
+
+          <!-- left weather card-->
+          <div class="current-left">
+            <div>
+              <p class="current-temp"></p>
+              <span class="temp-unit"></span>
+            </div>
+            <p class="feels-like"></p>
+          </div>
+
+          <!-- right weather card -->
+          <div class="current-right">
+            <img src="" alt="" class="current-weather-img">
+            <p class="current-condition"></p>
+          </div>
+
+        </div>
+        <div class="current-info-card card">
+          <div class="wind">
+            <h2>Wind</h2>
+            <h1 class="wind-val val"></h1>
+            <h2 class="wind-dir"></h2>
+            <h1 class="wind-units"></h1>
+          </div>
+          <div class="humidity">
+            <h2>Humidity</h2>
+            <h1 class="humidity-val val"></h1>
+          </div>
+          <div class="visibility">
+            <h2>Visibility</h2>
+            <h1 class="visibility-val val"></h1>
+          </div>
+          <div class="sunrise">
+            <h2>Sunrise</h2>
+            <h1 class="sunrise-val val"></h1>
+          </div>
+          <div class="gust">
+            <h2>Wind gust</h2>
+            <h1 class="gust-val val"></h1>
+          </div>
+          <div class="pressure">
+            <h2>Pressure</h2>
+            <h1 class="pressure-val val"></h1>
+          </div> 
+          <div class="uv">
+            <h2>UV Index</h2>
+            <h1 class="uv-val val"></h1>
+          </div>
+          <div class="sunset">
+            <h2>Sunset</h2>
+            <h1 class="sunset-val val"></h1>
+          </div>
+        </div>
+
+        <h1 class="hourly-heading">Hourly Forecast</h1>
+        <div class="hourly-card card">
+          <div class="hourly" data-hour="0">
+            <p class="hourly-day"></p>
+            <p class="hourly-hour"></p>
+            <img class="hourly-icon">
+            <p class="hourly-condition"></p>
+            <p class="hourly-temp"></p>
+            <p class="hourly-feelslike"></p>
+          </div>
+          <div class="hourly" data-hour="1">
+            <p class="hourly-day"></p>
+            <p class="hourly-hour"></p>
+            <img class="hourly-icon">
+            <p class="hourly-condition"></p>
+            <p class="hourly-temp"></p>
+            <p class="hourly-feelslike"></p>
+          </div>
+          <div class="hourly" data-hour="2">
+            <p class="hourly-day"></p>
+            <p class="hourly-hour"></p>
+            <img class="hourly-icon">
+          <p class="hourly-temp"></p><p
+             class="hourly-condition"></p>
+            <p class="hourly-feelslike"></p>
+          </div>
+          <div class="hourly" data-hour="3">
+            <p class="hourly-day"></p>
+            <p class="hourly-hour"></p>
+            <img class="hourly-icon">
+            <p class="hourly-condition"></p>
+            <p class="hourly-temp"></p>
+            <p class="hourly-feelslike"></p>
+          </div>
+          <div class="hourly" data-hour="4">
+            <p class="hourly-day"></p>
+            <p class="hourly-hour"></p>
+            <img class="hourly-icon">
+            <p class="hourly-condition"></p>
+            <p class="hourly-temp"></p>
+            <p class="hourly-feelslike"></p>
+          </div>
+          <div class="hourly" data-hour="5">
+            <p class="hourly-day"></p>
+            <p class="hourly-hour"></p>
+            <img class="hourly-icon">
+            <p class="hourly-condition"></p>
+            <p class="hourly-temp"></p>
+            <p class="hourly-feelslike"></p>
+          </div>
+          <div class="hourly" data-hour="6">
+            <p class="hourly-day"></p>
+            <p class="hourly-hour"></p>
+            <img class="hourly-icon">
+            <p class="hourly-condition"></p>
+            <p class="hourly-temp"></p>
+            <p class="hourly-feelslike"></p>
+          </div>
+          <div class="hourly" data-hour="7">
+            <p class="hourly-day"></p>
+            <p class="hourly-hour"></p>
+            <img class="hourly-icon">
+            <p class="hourly-condition"></p>
+            <p class="hourly-temp"></p>
+            <p class="hourly-feelslike"></p>
+          </div>
+          <div class="hourly" data-hour="8">
+            <p class="hourly-day"></p>
+            <p class="hourly-hour"></p>
+            <img class="hourly-icon">
+            <p class="hourly-condition"></p>
+            <p class="hourly-temp"></p>
+            <p class="hourly-feelslike"></p>
+          </div>
+          <div class="hourly" data-hour="9">
+            <p class="hourly-day"></p>
+            <p class="hourly-hour"></p>
+            <img class="hourly-icon">
+            <p class="hourly-condition"></p>
+            <p class="hourly-temp"></p>
+            <p class="hourly-feelslike"></p>
+          </div>
+          <div class="hourly" data-hour="10">
+            <p class="hourly-day"></p>
+            <p class="hourly-hour"></p>
+            <img class="hourly-icon">
+            <p class="hourly-condition"></p>
+            <p class="hourly-temp"></p>
+            <p class="hourly-feelslike"></p>
+          </div>
+          <div class="hourly" data-hour="11">
+            <p class="hourly-day"></p>
+            <p class="hourly-hour"></p>
+            <img class="hourly-icon">
+            <p class="hourly-condition"></p>
+            <p class="hourly-temp"></p>
+            <p class="hourly-feelslike"></p>
+          </div>
+        </div>
+
+        <h1 class="forecast-heading">3 Day Forecast</h1>
+        <div class="forecast-card card">
+          <div class="forecast" data-day="0">
+            <p class="forecast-day"></p>
+            <img class="forecast-icon">
+            <p class="forecast-condition"></p>
+            <div class="forecast-temps">
+              <p class="forecast-avg"></p>
+              <p class="forecast-max"></p>
+              <p class="forecast-min"></p>
+            </div>
+          </div>
+          <div class="forecast" data-day="1">
+            <p class="forecast-day"></p>
+            <img class="forecast-icon">
+            <p class="forecast-condition"></p>
+            <div class="forecast-temps">
+              <p class="forecast-avg"></p>
+              <p class="forecast-max"></p>
+              <p class="forecast-min"></p>
+            </div>
+          </div>
+          <div class="forecast" data-day="2">
+            <p class="forecast-day"></p>
+            <img class="forecast-icon">
+            <p class="forecast-condition"></p>
+            <div class="forecast-temps">
+              <p class="forecast-avg"></p>
+              <p class="forecast-max"></p>
+              <p class="forecast-min"></p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <footer>
+      <div class="footer-overlay">
+
+      </div>
+    </footer>
+  </body>
 </html>
