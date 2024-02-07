@@ -1,42 +1,25 @@
 import 'js-toggle-switch/dist/toggle-switch.min.css';
 import ToggleSwitch from 'js-toggle-switch/dist/toggle-switch.min.js';
-import { format } from 'date-fns';
 import './reset.css';
 import './style.css';
 import logoIconSrc from './assets/images/3521354_summer_sun_sunny_sunset_icon.png';
 import searchIconSrc from './assets/icons/magnify.svg';
+import { getDataObjects, unitsM, unitsI } from './data';
 
 const logo = document.querySelector('.logo');
 const searchIcon = document.querySelector('.search-icon');
 const searchForm = document.querySelector('form');
 const searchElem = document.querySelector('input[type="search"]');
-const apiKey = '810eb340de0342aba89234651242301';
-const baseURL = 'https://api.weatherapi.com/v1/forecast.json';
-const searchURL = 'https://api.weatherapi.com/v1/search.json';
 const toggleSwitch = new ToggleSwitch('input[name="unit-toggle"]');
 const autocompList = document.getElementById('autocomp');
 const unitToggle = document.querySelector('input[name="unit-toggle"]');
+
+const apiKey = '810eb340de0342aba89234651242301';
+const baseURL = 'https://api.weatherapi.com/v1/forecast.json';
+const searchURL = 'https://api.weatherapi.com/v1/search.json';
+
 let unitMode = 'C';
-const deg = String.fromCharCode(176);
-const unitsM = {
-  degree: deg + 'C',
-  speed: 'kph',
-  distance: 'km',
-  pressure: 'mb'
-}
-const unitsI = {
-  degree: deg + 'F',
-  speed: 'mph',
-  distance: 'mi',
-  pressure: 'in'
-}
 let searchIndex = -1;
-
-let dataC = {};
-let dataF = {};
-
-logo.src = logoIconSrc;
-searchIcon.src = searchIconSrc;
 
 async function getWeatherData (request) {
   const response = await fetch(request);
@@ -49,114 +32,7 @@ async function getWeatherData (request) {
   throw new Error(response.status);
 }
 
-function updateWeather (data) {
-  dataC = {
-    location: {
-      city: data.location.name,
-      region: data.location.region,
-      country: data.location.country
-    },
-    current: {
-      time: format(new Date(data.location.localtime), 'eeee, LLLL d, p'),
-      currentHour: (new Date(data.location.localtime)).getHours(),
-      temp: data.current.temp_c,
-      feelsLike: data.current.feelslike_c + unitsM.degree,
-      gust: data.current.gust_kph + unitsM.speed,
-      humidity: data.current.humidity + '%',
-      condition: data.current.condition.text,
-      icon: data.current.condition.icon,
-      uv: data.current.uv,
-      vis: data.current.vis_km + unitsM.distance,
-      windDeg: data.current.wind_degree,
-      windDir: data.current.wind_dir,
-      wind: data.current.wind_kph + unitsM.speed,
-      pressure: data.current.pressure_mb + unitsM.pressure,
-      cloudy: data.current.cloud,
-      sunrise: data.forecast.forecastday[0].astro.sunrise,
-      sunset: data.forecast.forecastday[0].astro.sunset
-    },
-    hourly: [
-      {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
-    ],
-    forecast: [{}, {}, {}, {}, {}, {}, {}]
-  }
-
-  dataF = {
-    location: {
-      city: data.location.name,
-      region: data.location.region,
-      country: data.location.country
-    },
-    current: {
-      time: format(new Date(data.location.localtime), 'eeee, LLLL d, p'),
-      currentHour: (new Date(data.location.localtime)).getHours(),
-      temp: data.current.temp_f,
-      feelsLike: data.current.feelslike_f + unitsI.degree,
-      gust: data.current.gust_mph + unitsI.speed,
-      humidity: data.current.humidity + '%',
-      condition: data.current.condition.text,
-      icon: data.current.condition.icon,
-      uv: data.current.uv,
-      vis: data.current.vis_miles + unitsI.distance,
-      windDeg: data.current.wind_degree,
-      windDir: data.current.wind_dir,
-      wind: data.current.wind_mph + unitsI.speed,
-      pressure: data.current.pressure_in + unitsI.pressure,
-      cloudy: data.current.cloud,
-      sunrise: data.forecast.forecastday[0].astro.sunrise,
-      sunset: data.forecast.forecastday[0].astro.sunset
-    },
-    hourly: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
-    forecast: [{}, {}, {}, {}, {}, {}, {}]
-  }
-
-  let day = 0;
-  let hour = dataC.current.currentHour + 1;
-
-  for (let i = 0; i < 12; i++) {
-    const date = new Date(data.forecast.forecastday[day].hour[hour].time);
-    hour = hour + 1;
-    if ((day === 0) && (hour > 23)) {
-      hour = 0;
-      day = 1;
-    }
-    dataC.hourly[i].hour = format(date, 'p');
-    dataC.hourly[i].day = format(date, 'iii');
-    dataF.hourly[i].hour = format(date, 'p');
-    dataF.hourly[i].day = format(date, 'iii');
-
-    dataC.hourly[i].temp = data.forecast.forecastday[day].hour[hour].temp_c + unitsM.degree;
-    dataC.hourly[i].feelsLike = data.forecast.forecastday[day].hour[hour].feelslike_c + unitsM.degree;
-    dataC.hourly[i].icon = data.forecast.forecastday[day].hour[hour].condition.icon;
-    dataC.hourly[i].condition = data.forecast.forecastday[day].hour[hour].condition.text;
-
-    dataF.hourly[i].temp = data.forecast.forecastday[day].hour[hour].temp_f + unitsI.degree;
-    dataF.hourly[i].feelsLike = data.forecast.forecastday[day].hour[hour].feelslike_f + unitsI.degree;
-    dataF.hourly[i].icon = data.forecast.forecastday[day].hour[hour].condition.icon;
-    dataF.hourly[i].condition = data.forecast.forecastday[day].hour[hour].condition.text;
-  }
-
-  for (let i = 0; i < 3; i++) {
-    const date = new Date(data.forecast.forecastday[day].hour[hour].time);
-
-    dataC.forecast[i].day = format(date, 'iii');
-    dataF.forecast[i].day = format(date, 'iii');
-
-    dataC.forecast[i].avg = data.forecast.forecastday[i].day.avgtemp_c + unitsM.degree;
-    dataC.forecast[i].min = data.forecast.forecastday[i].day.mintemp_c + unitsM.degree;
-    dataC.forecast[i].max = data.forecast.forecastday[i].day.maxtemp_c + unitsM.degree;
-    dataC.forecast[i].icon = data.forecast.forecastday[i].day.condition.icon;
-    dataC.forecast[i].condition = data.forecast.forecastday[i].day.condition.text;
-
-    dataF.forecast[i].avg = data.forecast.forecastday[i].day.avgtemp_f + unitsM.degree;
-    dataF.forecast[i].min = data.forecast.forecastday[i].day.mintemp_f + unitsM.degree;
-    dataF.forecast[i].max = data.forecast.forecastday[i].day.maxtemp_f + unitsM.degree;
-    dataF.forecast[i].icon = data.forecast.forecastday[i].day.condition.icon;
-    dataF.forecast[i].condition = data.forecast.forecastday[i].day.condition.text;
-  }
-}
-
-function displayWeather (data) {
+function displayWeather ({ dataC, dataF }) {
   let displayData;
   unitMode === 'C' ? displayData = dataC : displayData = dataF;
   const location = document.querySelector('.location');
@@ -336,15 +212,18 @@ unitToggle.addEventListener('change', e => {
   unitMode === 'C' ? unitMode = 'F' : unitMode = 'C';
   displayWeather();
 });
-
+/* This function takes a query and calls the search API to get a list of locations for autocomplete */
 function updateSearch (query) {
+  query = query.replaceAll(' ', '%20'); // replace spaces with the string character for urls
   const requestURL = searchURL + '?key=' + apiKey + '&q=' + query;
   const request = new Request(requestURL, { mode: 'cors' });
   getWeatherData(request).then(data => {
     Array.from(data).forEach(location => {
+      // create a list item
       const listItem = document.createElement('li');
       listItem.classList.add('autocomp-suggestion');
 
+      // get location name
       let locationName;
       if (location.region) {
         locationName = location.name + ', ' + location.region + ', ' + location.country;
@@ -353,6 +232,7 @@ function updateSearch (query) {
       }
       listItem.textContent = locationName;
 
+      // on list item click, it will get weather data for this location
       listItem.addEventListener('click', e => {
         updatePage(locationName, true);
       });
@@ -361,14 +241,22 @@ function updateSearch (query) {
   });
 }
 
+/* This function takes a query, creates a request object from that query, and calls the forecast weather API
+   If the data is retrieved, it updates the local data and updates the screen
+   If fetching failed, it throws an error and alerts the user
+
+   search variable is a boolean for refreshing autocomplete list
+*/
 function updatePage (query, search = false) {
-  const name = query;
-  query = query.replaceAll(' ', '%20');
+  const name = query; // name is used to show the location name in the search bar
+  query = query.replaceAll(' ', '%20'); // replace spaces with the string character for urls
+
+  // create the request and send the request
   const requestURL = baseURL + '?key=' + apiKey + '&q=' + query + '&days=3';
   const request = new Request(requestURL, { mode: 'cors' });
   getWeatherData(request).then(data => {
-    updateWeather(data);
-    displayWeather(data);
+    const filteredData = getDataObjects(data);
+    displayWeather(filteredData);
 
     if (search) {
       searchElem.value = name;
@@ -382,6 +270,11 @@ function updatePage (query, search = false) {
     });
 }
 
+/* Initial page load, shows weather for london, ontario */
 document.addEventListener('DOMContentLoaded', e => {
+  // add urls to images
+  logo.src = logoIconSrc;
+  searchIcon.src = searchIconSrc;
+
   updatePage('london%20ontario');
 });
