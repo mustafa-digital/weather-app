@@ -156,6 +156,7 @@ main {
     padding: 5px 10px;
 }
 
+.autocomp-suggestion.selected,
 .autocomp-suggestion:hover {
     background-color: #ebebeb;
 }

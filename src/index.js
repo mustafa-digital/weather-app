@@ -30,6 +30,7 @@ const unitsI = {
   distance: 'mi',
   pressure: 'in'
 }
+let searchIndex = -1;
 
 let dataC = {};
 let dataF = {};
@@ -178,7 +179,12 @@ function displayWeather (data) {
   const hourly = Array.from(document.querySelectorAll('.hourly'));
   const forecastWeek = Array.from(document.querySelectorAll('.forecast'));
 
-  if (displayData.location.region !== '') { location.textContent = displayData.location.city + ', ' + displayData.location.region + ', ' + displayData.location.country; } else { location.textContent = displayData.location.city + ', ' + displayData.location.country; }
+  if (displayData.location.region !== '') {
+    location.textContent = displayData.location.city + ', ' + displayData.location.region + ', ' + displayData.location.country;
+  } else {
+    location.textContent = displayData.location.city + ', ' + displayData.location.country;
+  }
+
   time.textContent = displayData.current.time;
   currentTemp.textContent = displayData.current.temp;
   tempUnit.textContent = unitMode === 'C' ? unitsM.degree : unitsI.degree;
@@ -235,6 +241,55 @@ function displayWeather (data) {
   });
 }
 
+/* Removes all selections - this is done to refresh the selections when autocomplete list is closed by clicking away */
+function removeSelections () {
+  const locations = document.querySelectorAll('.autocomp-suggestion');
+  Array.from(locations).forEach(loc => {
+    if (loc.classList.contains('selected')) { loc.classList.remove('selected'); }
+  });
+}
+
+/* Adds selected class to the appropriate autocomplete suggestion  */
+function selectFromList (locations) {
+  // removes previous selected element
+  Array.from(locations).forEach(loc => {
+    if (loc.classList.contains('selected')) { loc.classList.remove('selected'); }
+  });
+  // adds selected to new element
+  locations[searchIndex].classList.add('selected');
+}
+
+/* This function handles the down key press for autocomplete navigation
+   Increases index, then changes the 'selected' element
+*/
+function handleDown (length, locations) {
+  searchIndex = (searchIndex + 1) % length;
+  selectFromList(locations);
+}
+
+/* This function handles the up key press for autocomplete navigation
+   Decreases index, then changes the 'selected' element
+*/
+function handleUp (length, locations) {
+  if (searchIndex === -1) searchIndex = 0;
+  searchIndex = (length + (searchIndex - 1)) % length;
+  selectFromList(locations);
+}
+
+/* Key handler for up and down keys to navigate the autocomplete suggestions */
+function handleKeyDown (e) {
+  const locations = document.querySelectorAll('.autocomp-suggestion');
+  const { key } = e;
+  const length = locations.length;
+
+  if (key === 'ArrowUp') handleUp(length, locations);
+  if (key === 'ArrowDown') handleDown(length, locations);
+  if (key === 'Enter' && searchIndex !== -1) {
+    updatePage(locations[searchIndex].textContent, true);
+  };
+}
+searchElem.addEventListener('keydown', handleKeyDown);
+
 // event listener for search input element
 // each change to input does a search API call to get autocomplete data
 searchElem.addEventListener('input', e => {
@@ -242,41 +297,8 @@ searchElem.addEventListener('input', e => {
   autocompList.textContent = '';
   const query = searchElem.value;
 
-  if (query !== '') {
-    const requestURL = searchURL + '?key=' + apiKey + '&q=' + query;
-    const request = new Request(requestURL, { mode: 'cors' });
-    getWeatherData(request).then(data => {
-      Array.from(data).forEach(location => {
-        const listItem = document.createElement('li');
-        listItem.classList.add('autocomp-suggestion');
-
-        let locationName;
-        if (location.region) {
-          locationName = location.name + ', ' + location.region + ', ' + location.country;
-        } else {
-          locationName = location.name + ', ' + location.country;
-        }
-        listItem.textContent = locationName;
-
-        listItem.addEventListener('click', e => {
-          const requestURL = baseURL + '?key=' + apiKey + '&q=' + locationName + '&days=3';
-
-          const request = new Request(requestURL, { mode: 'cors' });
-          getWeatherData(request).then(data => {
-            updateWeather(data);
-            displayWeather(data);
-            searchElem.value = locationName;
-            autocompList.textContent = '';
-            autocompList.style.visibility = 'hidden';
-          })
-            .catch(err => {
-              console.error(err);
-            });
-        });
-
-        autocompList.appendChild(listItem);
-      })
-    });
+  if (query) {
+    updateSearch(query);
   }
 });
 
@@ -293,6 +315,8 @@ window.addEventListener('click', e => {
     e.clientY > boxDimensions.bottom
   ) {
     autocompList.style.visibility = 'hidden';
+    searchIndex = -1;
+    removeSelections();
   }
 });
 
@@ -305,19 +329,7 @@ searchForm.addEventListener('submit', e => {
   e.preventDefault(); // prevents page refresh
 
   const query = searchElem.value;
-  if (query !== '') {
-    const requestURL = baseURL + '?key=' + apiKey + '&q=' + query + '&days=3';
-
-    const request = new Request(requestURL, { mode: 'cors' });
-    getWeatherData(request).then(data => {
-      updateWeather(data);
-      displayWeather(data);
-    })
-      .catch(err => {
-        console.error(err);
-        alert('Sorry, could not find this location.');
-      });
-  }
+  if (query && searchIndex !== -1) updatePage(query);
 });
 
 unitToggle.addEventListener('change', e => {
@@ -325,20 +337,51 @@ unitToggle.addEventListener('change', e => {
   displayWeather();
 });
 
-document.addEventListener('DOMContentLoaded', e => {
-  const requestURL = baseURL + '?key=' + apiKey + '&q=london%20ontario' + '&days=3';
-
+function updateSearch (query) {
+  const requestURL = searchURL + '?key=' + apiKey + '&q=' + query;
   const request = new Request(requestURL, { mode: 'cors' });
   getWeatherData(request).then(data => {
-    console.log(data);
+    Array.from(data).forEach(location => {
+      const listItem = document.createElement('li');
+      listItem.classList.add('autocomp-suggestion');
+
+      let locationName;
+      if (location.region) {
+        locationName = location.name + ', ' + location.region + ', ' + location.country;
+      } else {
+        locationName = location.name + ', ' + location.country;
+      }
+      listItem.textContent = locationName;
+
+      listItem.addEventListener('click', e => {
+        updatePage(locationName, true);
+      });
+      autocompList.appendChild(listItem);
+    })
+  });
+}
+
+function updatePage (query, search = false) {
+  const name = query;
+  query = query.replaceAll(' ', '%20');
+  const requestURL = baseURL + '?key=' + apiKey + '&q=' + query + '&days=3';
+  const request = new Request(requestURL, { mode: 'cors' });
+  getWeatherData(request).then(data => {
     updateWeather(data);
     displayWeather(data);
+
+    if (search) {
+      searchElem.value = name;
+      autocompList.textContent = '';
+      autocompList.style.visibility = 'hidden';
+    }
   })
     .catch(err => {
       console.error(err);
+      alert('Sorry, could not find this location.');
     });
-});
-
-function updatePage (url) {
-
 }
+
+document.addEventListener('DOMContentLoaded', e => {
+  updatePage('london%20ontario');
+});
