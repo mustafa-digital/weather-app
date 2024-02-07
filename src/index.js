@@ -4,7 +4,8 @@ import './reset.css';
 import './style.css';
 import logoIconSrc from './assets/images/3521354_summer_sun_sunny_sunset_icon.png';
 import searchIconSrc from './assets/icons/magnify.svg';
-import { getDataObjects, unitsM, unitsI } from './data';
+import { getDataObjects } from './data';
+import { displayWeather, getLocationName } from './display';
 
 const logo = document.querySelector('.logo');
 const searchIcon = document.querySelector('.search-icon');
@@ -18,103 +19,20 @@ const apiKey = '810eb340de0342aba89234651242301';
 const baseURL = 'https://api.weatherapi.com/v1/forecast.json';
 const searchURL = 'https://api.weatherapi.com/v1/search.json';
 
-let unitMode = 'C';
-let searchIndex = -1;
+let filteredData; // container for the fetched dataC and dataF
+let unitMode = 'C'; // controls the current units to display
+let searchIndex = -1; // index for the autocomplete search
 
+/* This function sends a fetch request and returns with data if successful, throws an error if fetch fails */
 async function getWeatherData (request) {
   const response = await fetch(request);
 
-  if (response.status === 200) {
+  if (response.status === 200) { // OK
     const data = await response.json();
     return data;
   }
 
   throw new Error(response.status);
-}
-
-function displayWeather ({ dataC, dataF }) {
-  let displayData;
-  unitMode === 'C' ? displayData = dataC : displayData = dataF;
-  const location = document.querySelector('.location');
-  const time = document.querySelector('.time');
-  const currentTemp = document.querySelector('.current-temp');
-  const tempUnit = document.querySelector('.temp-unit');
-  const feelsLike = document.querySelector('.feels-like');
-  const weatherImg = document.querySelector('.current-weather-img');
-  const currentCondition = document.querySelector('.current-condition');
-  const wind = document.querySelector('.wind-val');
-  const windDir = document.querySelector('.wind-dir');
-  const humidity = document.querySelector('.humidity-val');
-  const visibility = document.querySelector('.visibility-val');
-  const sunrise = document.querySelector('.sunrise-val');
-  const gust = document.querySelector('.gust-val');
-  const pressure = document.querySelector('.pressure-val');
-  const uv = document.querySelector('.uv-val');
-  const sunset = document.querySelector('.sunset-val');
-
-  const hourly = Array.from(document.querySelectorAll('.hourly'));
-  const forecastWeek = Array.from(document.querySelectorAll('.forecast'));
-
-  if (displayData.location.region !== '') {
-    location.textContent = displayData.location.city + ', ' + displayData.location.region + ', ' + displayData.location.country;
-  } else {
-    location.textContent = displayData.location.city + ', ' + displayData.location.country;
-  }
-
-  time.textContent = displayData.current.time;
-  currentTemp.textContent = displayData.current.temp;
-  tempUnit.textContent = unitMode === 'C' ? unitsM.degree : unitsI.degree;
-  feelsLike.textContent = 'Feels like: ' + displayData.current.feelsLike;
-
-  weatherImg.src = displayData.current.icon;
-  weatherImg.alt = displayData.current.condition;
-  currentCondition.textContent = displayData.current.condition;
-
-  wind.textContent = displayData.current.wind;
-  windDir.textContent = displayData.current.windDir;
-  humidity.textContent = displayData.current.humidity;
-  visibility.textContent = displayData.current.vis;
-  sunrise.textContent = displayData.current.sunrise;
-  gust.textContent = displayData.current.gust;
-  pressure.textContent = displayData.current.pressure;
-  uv.textContent = displayData.current.uv;
-  sunset.textContent = displayData.current.sunset;
-
-  hourly.forEach(hour => {
-    const i = hour.dataset.hour;
-    const day = hour.querySelector('.hourly-day');
-    const hourlyHour = hour.querySelector('.hourly-hour');
-    // const condi = hour.querySelector('.hourly-condition');
-    const icon = hour.querySelector('.hourly-icon');
-    const temp = hour.querySelector('.hourly-temp');
-    const feelsLike = hour.querySelector('.hourly-feelslike');
-
-    day.textContent = displayData.hourly[i].day;
-    hourlyHour.textContent = displayData.hourly[i].hour;
-    // condi.textContent = displayData.hourly[i].condition;
-    icon.src = displayData.hourly[i].icon;
-    icon.alt = displayData.hourly[i].condition;
-    temp.textContent = displayData.hourly[i].temp;
-    feelsLike.textContent = 'Feels like: ' + displayData.hourly[i].feelsLike;
-  });
-
-  forecastWeek.forEach(forecast => {
-    const i = Number(forecast.dataset.day);
-    const day = forecast.querySelector('.forecast-day');
-    const avgTemp = forecast.querySelector('.forecast-avg');
-    const minTemp = forecast.querySelector('.forecast-min');
-    const maxTemp = forecast.querySelector('.forecast-max');
-    const icon = forecast.querySelector('.forecast-icon');
-    const condi = forecast.querySelector('.forecast-condition');
-
-    (i === 0) ? day.textContent = 'Today' : day.textContent = displayData.forecast[i].day;
-    avgTemp.textContent = 'Avg: ' + displayData.forecast[i].avg;
-    minTemp.textContent = 'Low: ' + displayData.forecast[i].min;
-    maxTemp.textContent = 'High: ' + displayData.forecast[i].max;
-    icon.src = displayData.forecast[i].icon;
-    icon.alt = displayData.forecast[i].condition;
-    condi.textContent = displayData.forecast[i].condition;
-  });
 }
 
 /* Removes all selections - this is done to refresh the selections when autocomplete list is closed by clicking away */
@@ -201,6 +119,9 @@ searchElem.addEventListener('focusin', e => {
   if (autocompList.textContent !== '') { autocompList.style.visibility = 'visible'; }
 })
 
+/* This function listens for submit events on the search bar (ie. when enter is pressed)
+   gets weather data and updates page for the user's query
+*/
 searchForm.addEventListener('submit', e => {
   e.preventDefault(); // prevents page refresh
 
@@ -208,10 +129,14 @@ searchForm.addEventListener('submit', e => {
   if (query && searchIndex !== -1) updatePage(query);
 });
 
+/* Toggles the unit toggle button to display the appropriate units */
 unitToggle.addEventListener('change', e => {
+  let displayData;
   unitMode === 'C' ? unitMode = 'F' : unitMode = 'C';
-  displayWeather();
+  unitMode === 'C' ? displayData = filteredData.dataC : displayData = filteredData.dataF;
+  displayWeather(displayData);
 });
+
 /* This function takes a query and calls the search API to get a list of locations for autocomplete */
 function updateSearch (query) {
   query = query.replaceAll(' ', '%20'); // replace spaces with the string character for urls
@@ -224,12 +149,8 @@ function updateSearch (query) {
       listItem.classList.add('autocomp-suggestion');
 
       // get location name
-      let locationName;
-      if (location.region) {
-        locationName = location.name + ', ' + location.region + ', ' + location.country;
-      } else {
-        locationName = location.name + ', ' + location.country;
-      }
+      const locationName = getLocationName(location);
+      // console.log(locationName);
       listItem.textContent = locationName;
 
       // on list item click, it will get weather data for this location
@@ -255,8 +176,10 @@ function updatePage (query, search = false) {
   const requestURL = baseURL + '?key=' + apiKey + '&q=' + query + '&days=3';
   const request = new Request(requestURL, { mode: 'cors' });
   getWeatherData(request).then(data => {
-    const filteredData = getDataObjects(data);
-    displayWeather(filteredData);
+    filteredData = getDataObjects(data);
+    let displayData;
+    unitMode === 'C' ? displayData = filteredData.dataC : displayData = filteredData.dataF;
+    displayWeather(displayData);
 
     if (search) {
       searchElem.value = name;

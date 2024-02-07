@@ -22,8 +22,10 @@
           <input type='search'
                  id='loc-search'
                  name='loc-search'
-                 placeholder='Search for location' 
-                 autocomplete="off" />
+                 placeholder='Search for location'
+                 list="'loc-auto" 
+                 autocomplete="off"/>
+                 <ul id="autocomp"></ul>
 
           <button type="submit" class="search-btn">
             <img alt="search icon" class="search-icon">
@@ -101,163 +103,137 @@
           </div>
         </div>
 
-        <h1 class="hourly-heading">Hourly</h1>
-        <div class="hourly-card card" data-mdb-perfect-scrollbar='true'>
+        <h1 class="hourly-heading">Hourly Forecast</h1>
+        <div class="hourly-card card">
           <div class="hourly" data-hour="0">
             <p class="hourly-day"></p>
             <p class="hourly-hour"></p>
-            <p class="hourly-condition"></p>
             <img class="hourly-icon">
+            <!-- <p class="hourly-condition"></p> -->
             <p class="hourly-temp"></p>
             <p class="hourly-feelslike"></p>
           </div>
           <div class="hourly" data-hour="1">
             <p class="hourly-day"></p>
             <p class="hourly-hour"></p>
-            <p class="hourly-condition"></p>
             <img class="hourly-icon">
+            <!-- <p class="hourly-condition"></p> -->
             <p class="hourly-temp"></p>
             <p class="hourly-feelslike"></p>
           </div>
           <div class="hourly" data-hour="2">
             <p class="hourly-day"></p>
             <p class="hourly-hour"></p>
-            <p class="hourly-condition"></p>
             <img class="hourly-icon">
+            <!-- <p class="hourly-condition"></p> -->
             <p class="hourly-temp"></p>
             <p class="hourly-feelslike"></p>
           </div>
           <div class="hourly" data-hour="3">
             <p class="hourly-day"></p>
             <p class="hourly-hour"></p>
-            <p class="hourly-condition"></p>
             <img class="hourly-icon">
+            <!-- <p class="hourly-condition"></p> -->
             <p class="hourly-temp"></p>
             <p class="hourly-feelslike"></p>
           </div>
           <div class="hourly" data-hour="4">
             <p class="hourly-day"></p>
             <p class="hourly-hour"></p>
-            <p class="hourly-condition"></p>
             <img class="hourly-icon">
+            <!-- <p class="hourly-condition"></p> -->
             <p class="hourly-temp"></p>
             <p class="hourly-feelslike"></p>
           </div>
           <div class="hourly" data-hour="5">
             <p class="hourly-day"></p>
             <p class="hourly-hour"></p>
-            <p class="hourly-condition"></p>
             <img class="hourly-icon">
+            <!-- <p class="hourly-condition"></p> -->
             <p class="hourly-temp"></p>
             <p class="hourly-feelslike"></p>
           </div>
           <div class="hourly" data-hour="6">
             <p class="hourly-day"></p>
             <p class="hourly-hour"></p>
-            <p class="hourly-condition"></p>
             <img class="hourly-icon">
+            <!-- <p class="hourly-condition"></p> -->
             <p class="hourly-temp"></p>
             <p class="hourly-feelslike"></p>
           </div>
           <div class="hourly" data-hour="7">
             <p class="hourly-day"></p>
             <p class="hourly-hour"></p>
-            <p class="hourly-condition"></p>
             <img class="hourly-icon">
+            <!-- <p class="hourly-condition"></p> -->
             <p class="hourly-temp"></p>
             <p class="hourly-feelslike"></p>
           </div>
           <div class="hourly" data-hour="8">
             <p class="hourly-day"></p>
             <p class="hourly-hour"></p>
-            <p class="hourly-condition"></p>
             <img class="hourly-icon">
+            <!-- <p class="hourly-condition"></p> -->
             <p class="hourly-temp"></p>
             <p class="hourly-feelslike"></p>
           </div>
           <div class="hourly" data-hour="9">
             <p class="hourly-day"></p>
             <p class="hourly-hour"></p>
-            <p class="hourly-condition"></p>
             <img class="hourly-icon">
+            <!-- <p class="hourly-condition"></p> -->
             <p class="hourly-temp"></p>
             <p class="hourly-feelslike"></p>
           </div>
           <div class="hourly" data-hour="10">
             <p class="hourly-day"></p>
             <p class="hourly-hour"></p>
-            <p class="hourly-condition"></p>
             <img class="hourly-icon">
+            <!-- <p class="hourly-condition"></p> -->
             <p class="hourly-temp"></p>
             <p class="hourly-feelslike"></p>
           </div>
           <div class="hourly" data-hour="11">
             <p class="hourly-day"></p>
             <p class="hourly-hour"></p>
-            <p class="hourly-condition"></p>
             <img class="hourly-icon">
+            <!-- <p class="hourly-condition"></p> -->
             <p class="hourly-temp"></p>
             <p class="hourly-feelslike"></p>
           </div>
         </div>
 
-        <h1 class="forecast-heading">7 Day Forecast</h1>
+        <h1 class="forecast-heading">3 Day Forecast</h1>
         <div class="forecast-card card">
           <div class="forecast" data-day="0">
             <p class="forecast-day"></p>
-            <p class="forecast-condition"></p>
             <img class="forecast-icon">
-            <p class="forecast-avg"></p>
-            <p class="forecast-min"></p>
-            <p class="forecast-max"></p>
+            <p class="forecast-condition"></p>
+            <div class="forecast-temps">
+              <p class="forecast-avg"></p>
+              <p class="forecast-max"></p>
+              <p class="forecast-min"></p>
+            </div>
           </div>
           <div class="forecast" data-day="1">
             <p class="forecast-day"></p>
-            <p class="forecast-condition"></p>
             <img class="forecast-icon">
-            <p class="forecast-avg"></p>
-            <p class="forecast-min"></p>
-            <p class="forecast-max"></p>
+            <p class="forecast-condition"></p>
+            <div class="forecast-temps">
+              <p class="forecast-avg"></p>
+              <p class="forecast-max"></p>
+              <p class="forecast-min"></p>
+            </div>
           </div>
           <div class="forecast" data-day="2">
             <p class="forecast-day"></p>
-            <p class="forecast-condition"></p>
             <img class="forecast-icon">
-            <p class="forecast-avg"></p>
-            <p class="forecast-min"></p>
-            <p class="forecast-max"></p>
-          </div>
-          <div class="forecast" data-day="3">
-            <p class="forecast-day"></p>
             <p class="forecast-condition"></p>
-            <img class="forecast-icon">
-            <p class="forecast-avg"></p>
-            <p class="forecast-min"></p>
-            <p class="forecast-max"></p>
-          </div>
-          <div class="forecast" data-day="4">
-            <p class="forecast-day"></p>
-            <p class="forecast-condition"></p>
-            <img class="forecast-icon">
-            <p class="forecast-avg"></p>
-            <p class="forecast-min"></p>
-            <p class="forecast-max"></p>
-          </div>
-          <div class="forecast" data-day="5">
-            <p class="forecast-day"></p>
-            <p class="forecast-condition"></p>
-            <img class="forecast-icon">
-            <p class="forecast-avg"></p>
-            <p class="forecast-min"></p>
-            <p class="forecast-max"></p>
-          </div>
-          <div class="forecast" data-day="6">
-            <p class="forecast-day"></p>
-            <p class="forecast-condition"></p>
-            <img class="forecast-icon">
-            <p class="forecast-avg"></p>
-            <p class="forecast-min"></p>
-            <p class="forecast-max"></p>
+            <div class="forecast-temps">
+              <p class="forecast-avg"></p>
+              <p class="forecast-max"></p>
+              <p class="forecast-min"></p>
+            </div>
           </div>
 
         </div>

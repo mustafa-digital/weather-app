@@ -50,7 +50,8 @@ export function getDataObjects (data) {
       pressure: data.current.pressure_mb + unitsM.pressure,
       cloudy: data.current.cloud,
       sunrise: data.forecast.forecastday[0].astro.sunrise,
-      sunset: data.forecast.forecastday[0].astro.sunset
+      sunset: data.forecast.forecastday[0].astro.sunset,
+      tempUnit: unitsM.degree
     },
     // hourly forecast (12 hours), objects initialized
     hourly: [
@@ -84,7 +85,8 @@ export function getDataObjects (data) {
       pressure: data.current.pressure_in + unitsI.pressure,
       cloudy: data.current.cloud,
       sunrise: data.forecast.forecastday[0].astro.sunrise,
-      sunset: data.forecast.forecastday[0].astro.sunset
+      sunset: data.forecast.forecastday[0].astro.sunset,
+      tempUnit: unitsI.degree
     },
     hourly: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
     forecast: [{}, {}, {}, {}, {}, {}, {}]
@@ -95,8 +97,6 @@ export function getDataObjects (data) {
   let hour = dataC.current.currentHour + 1;
 
   for (let i = 0; i < NUM_HOURS; i++) {
-    const date = new Date(data.forecast.forecastday[day].hour[hour].time); // get the date for that time
-
     hour = hour + 1; // increase the hour every loop
 
     // if hours spill into the next day, reset the hours and update day to second day
@@ -104,6 +104,7 @@ export function getDataObjects (data) {
       hour = 0;
       day = 1;
     }
+    const date = new Date(data.forecast.forecastday[day].hour[hour].time); // get the date for that time
 
     // fill in the hours and days
     dataC.hourly[i].hour = format(date, 'p');
@@ -123,7 +124,6 @@ export function getDataObjects (data) {
     dataF.hourly[i].condition = data.forecast.forecastday[day].hour[hour].condition.text;
   }
 
-  console.log(data);
   // fill in data for three day forecast
   for (let i = 0; i < DAYS_FORECAST; i++) {
     const date = new Date(data.forecast.forecastday[day].hour[hour].time);
