@@ -12,7 +12,9 @@ const searchForm = document.querySelector('form');
 const searchElem = document.querySelector('input[type="search"]');
 const apiKey = '810eb340de0342aba89234651242301';
 const baseURL = 'https://api.weatherapi.com/v1/forecast.json';
+const searchURL = 'https://api.weatherapi.com/v1/search.json';
 const toggleSwitch = new ToggleSwitch('input[name="unit-toggle"]');
+const autocompList = document.getElementById('autocomp');
 const unitToggle = document.querySelector('input[name="unit-toggle"]');
 let unitMode = 'C';
 const deg = String.fromCharCode(176);
@@ -200,14 +202,14 @@ function displayWeather (data) {
     const i = hour.dataset.hour;
     const day = hour.querySelector('.hourly-day');
     const hourlyHour = hour.querySelector('.hourly-hour');
-    const condi = hour.querySelector('.hourly-condition');
+    // const condi = hour.querySelector('.hourly-condition');
     const icon = hour.querySelector('.hourly-icon');
     const temp = hour.querySelector('.hourly-temp');
     const feelsLike = hour.querySelector('.hourly-feelslike');
 
     day.textContent = displayData.hourly[i].day;
     hourlyHour.textContent = displayData.hourly[i].hour;
-    condi.textContent = displayData.hourly[i].condition;
+    // condi.textContent = displayData.hourly[i].condition;
     icon.src = displayData.hourly[i].icon;
     icon.alt = displayData.hourly[i].condition;
     temp.textContent = displayData.hourly[i].temp;
@@ -233,13 +235,78 @@ function displayWeather (data) {
   });
 }
 
-searchForm.addEventListener('submit', e => {
-  e.preventDefault();
-
+// event listener for search input element
+// each change to input does a search API call to get autocomplete data
+searchElem.addEventListener('input', e => {
+  autocompList.style.visibility = 'visible';
+  autocompList.textContent = '';
   const query = searchElem.value;
 
   if (query !== '') {
-    const requestURL = baseURL + '?key=' + apiKey + '&q=' + query + '&days=9';
+    const requestURL = searchURL + '?key=' + apiKey + '&q=' + query;
+    const request = new Request(requestURL, { mode: 'cors' });
+    getWeatherData(request).then(data => {
+      Array.from(data).forEach(location => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('autocomp-suggestion');
+
+        let locationName;
+        if (location.region) {
+          locationName = location.name + ', ' + location.region + ', ' + location.country;
+        } else {
+          locationName = location.name + ', ' + location.country;
+        }
+        listItem.textContent = locationName;
+
+        listItem.addEventListener('click', e => {
+          const requestURL = baseURL + '?key=' + apiKey + '&q=' + locationName + '&days=3';
+
+          const request = new Request(requestURL, { mode: 'cors' });
+          getWeatherData(request).then(data => {
+            updateWeather(data);
+            displayWeather(data);
+            searchElem.value = locationName;
+            autocompList.textContent = '';
+            autocompList.style.visibility = 'hidden';
+          })
+            .catch(err => {
+              console.error(err);
+            });
+        });
+
+        autocompList.appendChild(listItem);
+      })
+    });
+  }
+});
+
+/* Hide the auto complete list if it is on the screen and the user has clicked away
+   Checks if mouse click is outside the autocomplete dimensions, if true, hides autocomplete
+*/
+window.addEventListener('click', e => {
+  if (autocompList.style.visibility === 'hidden' || e.target === searchElem) return;
+  const boxDimensions = autocompList.getBoundingClientRect();
+  if (
+    e.clientX < boxDimensions.left ||
+    e.clientX > boxDimensions.right ||
+    e.clientY < boxDimensions.top ||
+    e.clientY > boxDimensions.bottom
+  ) {
+    autocompList.style.visibility = 'hidden';
+  }
+});
+
+/* This event listener listens to when the search bar gains focus, and toggles autocomplete list visibility on */
+searchElem.addEventListener('focusin', e => {
+  if (autocompList.textContent !== '') { autocompList.style.visibility = 'visible'; }
+})
+
+searchForm.addEventListener('submit', e => {
+  e.preventDefault(); // prevents page refresh
+
+  const query = searchElem.value;
+  if (query !== '') {
+    const requestURL = baseURL + '?key=' + apiKey + '&q=' + query + '&days=3';
 
     const request = new Request(requestURL, { mode: 'cors' });
     getWeatherData(request).then(data => {
@@ -248,6 +315,7 @@ searchForm.addEventListener('submit', e => {
     })
       .catch(err => {
         console.error(err);
+        alert('Sorry, could not find this location.');
       });
   }
 });
@@ -258,7 +326,7 @@ unitToggle.addEventListener('change', e => {
 });
 
 document.addEventListener('DOMContentLoaded', e => {
-  const requestURL = baseURL + '?key=' + apiKey + '&q=london%20ontario' + '&days=9';
+  const requestURL = baseURL + '?key=' + apiKey + '&q=london%20ontario' + '&days=3';
 
   const request = new Request(requestURL, { mode: 'cors' });
   getWeatherData(request).then(data => {
@@ -270,3 +338,7 @@ document.addEventListener('DOMContentLoaded', e => {
       console.error(err);
     });
 });
+
+function updatePage (url) {
+
+}
