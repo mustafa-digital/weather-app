@@ -11,14 +11,16 @@ const logo = document.querySelector('.logo');
 const searchIcon = document.querySelector('.search-icon');
 const searchForm = document.querySelector('form');
 const searchElem = document.querySelector('input[type="search"]');
-const toggleSwitch = new ToggleSwitch('input[name="unit-toggle"]');
+const toggleSwitch = new ToggleSwitch('input[name="unit-toggle"]'); // creates the toggle switch over the checkbox
 const autocompList = document.getElementById('autocomp');
 const unitToggle = document.querySelector('input[name="unit-toggle"]');
 
+// variables used in weather API calls
 const apiKey = '810eb340de0342aba89234651242301';
 const baseURL = 'https://api.weatherapi.com/v1/forecast.json';
 const searchURL = 'https://api.weatherapi.com/v1/search.json';
 
+// Global Variables
 let filteredData; // container for the fetched dataC and dataF
 let unitMode = 'C'; // controls the current units to display
 let searchIndex = -1; // index for the autocomplete search

@@ -1,3 +1,14 @@
+@font-face {
+    font-family: 'poppins-reg';
+    src: url('./assets/fonts/Poppins/Poppins-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'poppins-light';
+    src: url('./assets/fonts/Poppins/Poppins-Light.ttf');
+}
+
+
 :root {
     overflow-x: hidden;
 }
@@ -10,11 +21,11 @@
 :root::-webkit-scrollbar-track {
     margin-left: 1px;
     margin-right: 1px;
-    background-color: rgb(14, 29, 78);
+    background: linear-gradient(180deg, rgb(21, 74, 189) 0.1%, rgb(26, 138, 211) 51.5%, rgb(72, 177, 234) 100.2%);
 }
    
 :root::-webkit-scrollbar-thumb {
-    background-color: #fcd34d;
+    background: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);
     border-radius: 10px;
 }
 
@@ -34,10 +45,11 @@ li {
 }
 
 body {
-    height: 100vh;
     width: 100vw;
     display: flex;
     flex-direction: column;
+    background: linear-gradient(180deg, rgb(21, 74, 189) 0.1%, rgb(26, 138, 211) 51.5%, rgb(72, 177, 234) 100.2%);
+    font-family: 'poppins-reg', sans-serif;
 }
 
 header {
@@ -46,8 +58,7 @@ header {
     grid-template-rows: 1fr;
     padding: 10px;
     width: 100vw;
-    /* height: 60px; */
-    background-color: lightskyblue;
+    background: transparent;
 }
 
 header > * {
@@ -94,10 +105,17 @@ form {
 input[type=search] {
     width: 57vw;
     border-radius: 5px;
-    background-color: #1e40af;
+    background: linear-gradient(-45deg, rgb(3, 67, 131, 0.8), rgb(2, 27, 121, 0.8));
     color: #fafafa;
     font-size: 1.5rem;
     padding: 0px 5px;
+    border: none;
+    box-shadow: 2px 2px 2px #444444;
+}
+
+input[type=search],
+.card {
+    box-shadow: 4px 4px 4px #c9c7c7;
 }
 
 input[type=search]::placeholder {
@@ -121,7 +139,6 @@ input[type=checkbox] {
 main {
     width: 100vw;
     /* height: 100%; */
-    background-color: #60a5fa;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -163,7 +180,7 @@ main {
 
 .card {
     height: 150px;
-    background-color: #13286b;
+    background: linear-gradient(-45deg, rgb(3, 67, 131, 0.8), rgb(2, 27, 121, 0.8));
     border-radius: 10px;
     padding: 10px;
 }
@@ -172,10 +189,10 @@ main {
     width: 50vw;
     /* height: 90%; */
     min-height: fit-content;
-    background-color: #1e40af;
+    background: transparent;
     border-radius: 1.5rem;
     color: #fafafa;
-    padding: 30px;
+    padding: 10px;
     display: grid;
     grid-template-columns: 15vw 1fr;
     grid-template-rows: repeat( auto-fit, minmax(70px, 1fr));
@@ -191,6 +208,17 @@ main {
 .location {
     font-size: 2.5rem;
     font-weight: bold;
+    color: #fff1eb;
+    font-family: 'poppins-light', sans-serif;
+}
+
+.hourly-heading,
+.forecast-heading {
+    margin-top: 20px;
+} 
+
+.toggle-switch {
+    box-shadow: 1px 0px 1px #c9c7c7;
 }
 
 .current-weather {
@@ -278,7 +306,6 @@ main {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: 1fr;
-    /* min-height: max-content; */
     height: auto;
     white-space: nowrap;
     overflow-x: scroll;
@@ -286,7 +313,6 @@ main {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     padding: 0px 0px;
-    /* row-gap: 5px; */
     padding-bottom: 10px;
 }
 
@@ -298,16 +324,15 @@ main {
 .hourly-card::-webkit-scrollbar-track {
     margin-left: 1px;
     margin-right: 1px;
-    background-color: rgb(14, 29, 78);
+    background-color: transparent;
 }
    
 .hourly-card::-webkit-scrollbar-thumb {
-    background-color: #fcd34d;
+    background: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);
     border-radius: 10px;
 }
 
 .hourly {
-    /* height: 300px; */
     display: grid;
     grid-template-rows: repeat( auto-fit, minmax(20px, 1fr) );
     align-items: center;
@@ -382,10 +407,6 @@ main {
 
 .forecast-icon {
     width: 100px;
-}
-
-.forecast-condition {
-    /* align-self: start; */
 }
 
 .forecast-temps {

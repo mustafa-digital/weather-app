@@ -126,7 +126,7 @@ export function getDataObjects (data) {
 
   // fill in data for three day forecast
   for (let i = 0; i < DAYS_FORECAST; i++) {
-    const date = new Date(data.forecast.forecastday[day].hour[hour].time);
+    const date = new Date(data.forecast.forecastday[i].hour[hour].time);
 
     dataC.forecast[i].day = format(date, 'iii');
     dataF.forecast[i].day = format(date, 'iii');
