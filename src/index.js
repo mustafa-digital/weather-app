@@ -4,10 +4,12 @@ import './reset.css';
 import './style.css';
 import logoIconSrc from './assets/images/3521354_summer_sun_sunny_sunset_icon.png';
 import searchIconSrc from './assets/icons/magnify.svg';
+import githubLogoSrc from './assets/icons/github-mark.svg';
 import { getDataObjects } from './data';
 import { displayWeather, getLocationName } from './display';
 
 const logo = document.querySelector('.logo');
+const githubLogo = document.querySelector('.github-logo');
 const searchIcon = document.querySelector('.search-icon');
 const searchForm = document.querySelector('form');
 const searchElem = document.querySelector('input[type="search"]');
@@ -200,6 +202,7 @@ document.addEventListener('DOMContentLoaded', e => {
   // add urls to images
   logo.src = logoIconSrc;
   searchIcon.src = searchIconSrc;
+  githubLogo.src = githubLogoSrc;
 
   updatePage('london%20ontario');
 });
