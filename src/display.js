@@ -1,3 +1,4 @@
+/* Takes in a data object and updates the page to show the new information */
 export function displayWeather (data) {
   // update location header
   const location = document.querySelector('.location'); // location header

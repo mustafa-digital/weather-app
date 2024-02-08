@@ -22,6 +22,7 @@ export const unitsI = {
   pressure: 'in'
 }
 
+/* This function takes the raw data from weather API and parses it into a celsius object and fahrenheit object which are returned */
 export function getDataObjects (data) {
   // Fill the celsius object with celsius data
   const dataC = {
@@ -145,5 +146,5 @@ export function getDataObjects (data) {
     dataF.forecast[i].condition = data.forecast.forecastday[i].day.condition.text;
   }
 
-  return { dataC, dataF }
+  return { dataC, dataF };
 }
